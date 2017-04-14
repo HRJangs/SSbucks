@@ -14,43 +14,40 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
-public class EmpPanel extends JPanel implements ActionListener{
+public class EmpPanel extends MyPanel implements ActionListener, TableModelListener{
 	JPanel p_south,p_north;
-	JTable table;
-	JTextField t_search;
+	//JTable table;
+
 	JScrollPane scroll;
 	JLabel la_name;
-	Choice choice;
 	JButton bt_search,bt_reg,bt_edit;
 	DataController dataController;
 	
 	public EmpPanel() {
 		p_south = new JPanel();
 		p_north = new JPanel();
-		table = new JTable(3,4);
-		t_search = new JTextField(20);
 		scroll =new JScrollPane(table);
 		la_name =new JLabel("이름");
-		choice = new Choice();
 		bt_search = new JButton("검색");
 		bt_reg = new JButton("직원 계정 추가");
-		bt_edit = new JButton("직원 정보 수정");
-		dataController = new DataController();
-		dataController.getEmp();
-		choice.add("이름");
-		choice.add("ID");
+		//bt_edit = new JButton("직원 정보 수정");
+		dataController = new DataController(this);
+		dataController.getList("emp");
 		
 		p_south.setPreferredSize(new Dimension(800, 70));
 		setLayout(new BorderLayout());
 		p_north.add(bt_reg);
-		p_north.add(bt_edit);
+		//p_north.add(bt_edit);
 		p_south.add(choice);
 		p_south.add(t_search);
 		p_south.add(bt_search);
 		
+		
 		//버튼에 리스너 연결
-		bt_edit.addActionListener(this);
+		//bt_edit.addActionListener(this);
 		bt_reg.addActionListener(this);
 		bt_search.addActionListener(this);
 		
@@ -66,19 +63,22 @@ public class EmpPanel extends JPanel implements ActionListener{
 		Object obj = e.getSource();
 		if(obj == bt_reg){
 			regist();
-		}else if(obj == bt_edit){
-			edit();
 		}else if(obj == bt_search){
 			search();
 		}
 	}
 	public void regist(){
-		JOptionPane.showMessageDialog(this, "회원 계정 등록");
-	}
-	public void edit(){
-		JOptionPane.showMessageDialog(this, "회원 정보 수정");
+		new InsertFrame(dataController);
 	}
 	public void search(){
 		JOptionPane.showMessageDialog(this, "검색할게요");
+		dataController.SearchEmp();
+	}
+
+	public void tableChanged(TableModelEvent e) {
+		int row = e.getFirstRow();
+		int col = e.getColumn();
+		
+		
 	}
 }
